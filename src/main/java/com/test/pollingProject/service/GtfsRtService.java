@@ -39,12 +39,18 @@ public class GtfsRtService {
         GtfsRtDTO.Response response = objectMapper.readValue(jsonResponse, GtfsRtDTO.Response.class);
         List<Vehicle> vehicles = response.entity.stream()
                 .map(this::toEntity)
-                .peek(v -> System.out.println("DEBUG: Saving vehicle with ID: " + v.getId()))
                 .collect(Collectors.toList());
 
         vehicleRepository.saveAll(vehicles);
     }
 
+    /**
+     * Maps the returned JSON fields to a DTO entity so that it can be stored in the
+     * database with little hassle
+     * 
+     * @param entity - The JSON Response to be mapped
+     * @return The mapped Java object
+     */
     private Vehicle toEntity(GtfsRtDTO.Entity entity) {
 
         Optional<GtfsRtDTO.VehicleExterior> vehicleDTO = Optional.ofNullable(entity.vehicle);
