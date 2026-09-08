@@ -1,6 +1,5 @@
 package com.test.pollingProject.scheduler;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

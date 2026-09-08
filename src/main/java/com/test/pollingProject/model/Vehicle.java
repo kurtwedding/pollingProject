@@ -1,5 +1,7 @@
 package com.test.pollingProject.model;
 
+import com.test.pollingProject.model.enums.vehicles.OccupancyStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -25,5 +27,6 @@ public class Vehicle {
 
     private double bearing;
     private String route_id;
-    private int occupancy_status;
+
+    private OccupancyStatus occupancy_status;
 }

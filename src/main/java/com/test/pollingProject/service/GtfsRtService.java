@@ -9,6 +9,7 @@ import org.springframework.web.client.RestClient;
 
 import com.test.pollingProject.model.GtfsRtDTO;
 import com.test.pollingProject.model.Vehicle;
+import com.test.pollingProject.model.enums.vehicles.OccupancyStatus;
 import com.test.pollingProject.store.VehicleRepository;
 
 import tools.jackson.databind.ObjectMapper;
@@ -60,7 +61,7 @@ public class GtfsRtService {
                 .latitude(vehicleDTO.map(v -> v.position).map(p -> p.latitude).orElse(0.0))
                 .longitude(vehicleDTO.map(v -> v.position).map(p -> p.longitude).orElse(0.0))
                 .bearing(vehicleDTO.map(v -> v.position).map(p -> p.bearing).orElse(0.0))
-                .occupancy_status(vehicleDTO.map(v -> v.occupancy_status).orElse(0))
+                .occupancy_status(vehicleDTO.map(v -> v.occupancy_status).orElse(OccupancyStatus.NO_DATA_AVAILABLE))
                 .build();
     }
 }

@@ -2,6 +2,8 @@ package com.test.pollingProject.model;
 
 import java.util.List;
 
+import com.test.pollingProject.model.enums.vehicles.OccupancyStatus;
+
 public class GtfsRtDTO {
     public static class Response {
         public List<Entity> entity;
@@ -15,7 +17,7 @@ public class GtfsRtDTO {
         public VehicleInterior vehicle;
         public Position position;
         public Trip trip;
-        public int occupancy_status;
+        public OccupancyStatus occupancy_status;
     }
 
     public static class VehicleInterior {
