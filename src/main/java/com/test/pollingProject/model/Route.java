@@ -1,6 +1,6 @@
 package com.test.pollingProject.model;
 
-import com.test.pollingProject.model.enums.RouteType;
+import com.test.pollingProject.model.enums.routes.RouteType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,9 +21,11 @@ public class Route {
     @Id
     private String route_id;
     private String agency_id;
-    private String short_name;
-    private String long_name;
+    private String route_short_name;
+    private String route_long_name;
     private String route_color;
+    private String route_text_color;
+
     private RouteType route_type; // Runs RouteTypeConverter automatically for this field.
 
 }

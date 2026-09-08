@@ -1,43 +1,38 @@
-package com.test.pollingProject.model.enums;
+package com.test.pollingProject.model.enums.trips;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.Getter;
 
 @Getter
-public enum RouteType {
-    TRAM(0, "Tram"),
-    SUBWAY(1, "Subway"),
-    RAIL(2, "Rail"),
-    BUS(3, "Bus"),
-    FERRY(4, "Ferry"),
-    CABLE_CAR(5, "Cable car"),
-    LIFT(6, "Aerial Lift"),
-    FUNICULAR(7, "Funicular"),
-    TROLLEYBUS(11, "Electric Tram"),
-    MONORAIL(12, "Monorail"),
-    UNKNOWN(99, "Unknown");
+public enum BikesAllowed {
+    UNKNOWN(0, "No information available"),
+    ALLOWED(1, "Bikes allowed"),
+    NOT_ALLOWED(2, "Bikes not allowed");
 
     private final int code;
     private final String label;
 
-    RouteType(int code, String label) {
+    BikesAllowed(int code, String label) {
         this.code = code;
         this.label = label;
     }
 
     @JsonCreator
-    public static RouteType fromCode(String code) {
+    public static BikesAllowed fromCode(String code) {
         int intCode;
         try {
             intCode = Integer.parseInt(code);
         } catch (NumberFormatException e) {
             return UNKNOWN; // If the code is not a valid integer, return UNKNOWN
         }
-        for (RouteType type : values()) {
+        for (BikesAllowed type : values()) {
             if (intCode == type.getCode())
                 return type;
         }
         // If the value is not one of the known above
+        System.out.println("UNKNOWN ROUTE TYPE: " + intCode);
         return UNKNOWN;
     }
+
 }

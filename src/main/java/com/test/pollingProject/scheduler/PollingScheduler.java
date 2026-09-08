@@ -1,5 +1,6 @@
 package com.test.pollingProject.scheduler;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,6 +17,7 @@ import com.test.pollingProject.store.VehicleRepository;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -50,6 +52,7 @@ public class PollingScheduler {
         System.out.println(
                 "[" + LocalTime.now() + "] Polling for Static GTFS Data...");
         try {
+            LocalTime tempTime = LocalTime.now();
             String jsonResponse = restClient.get()
                     .uri("/gtfs/stops")
                     .retrieve()
@@ -58,11 +61,15 @@ public class PollingScheduler {
             });
 
             stopRepository.saveAll(stops); // Save the stops to the Database table
+            System.out.println(
+                    "[" + LocalTime.now() + "] Successfully polled stops data in: "
+                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         try {
+            LocalTime tempTime = LocalTime.now();
             String jsonResponse = restClient.get()
                     .uri("/gtfs/routes")
                     .retrieve()
@@ -71,11 +78,15 @@ public class PollingScheduler {
             });
 
             routeRepository.saveAll(routes); // Save the routes to the Database table
+            System.out.println(
+                    "[" + LocalTime.now() + "] Successfully polled routes data in: "
+                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         try {
+            LocalTime tempTime = LocalTime.now();
             String jsonResponse = restClient.get()
                     .uri("/gtfs/trips")
                     .retrieve()
@@ -84,6 +95,9 @@ public class PollingScheduler {
             });
 
             tripRepository.saveAll(trips); // Save the routes to the Database table
+            System.out.println(
+                    "[" + LocalTime.now() + "] Successfully polled trips data in: "
+                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,10 +115,14 @@ public class PollingScheduler {
     private void getLiveGTFSData() {
         GtfsRtService gtfsRtService = new GtfsRtService(vehicleRepository, objectMapper);
 
+        LocalTime tempTime = LocalTime.now();
         System.out.println(
                 "[" + LocalTime.now() + "] Polling for Realtime GTFS Data...");
         try {
             gtfsRtService.pollAndSaveVehicles();
+            System.out.println(
+                    "[" + LocalTime.now() + "] Successfully polled data in: "
+                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

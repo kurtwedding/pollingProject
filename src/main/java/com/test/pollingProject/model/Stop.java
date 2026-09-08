@@ -1,5 +1,9 @@
 package com.test.pollingProject.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.pollingProject.model.enums.stops.LocationType;
+import com.test.pollingProject.model.enums.stops.WheelchairBoarding;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,12 +26,15 @@ public class Stop {
 
     private String stop_name;
 
-    private double stop_lat;
-    private double stop_lon;
+    // Mapping these under a different name to make bounds checking easier in
+    // StopRepository.java
+    @JsonProperty("stop_lat")
+    private Double latitude;
+    @JsonProperty("stop_lon")
+    private Double longitude;
 
+    private WheelchairBoarding wheelchair_boarding;
+    private LocationType location_type;
     private String parent_station;
-
-
-
 
 }

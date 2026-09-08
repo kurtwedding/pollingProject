@@ -19,8 +19,10 @@ import lombok.Setter;
 public class Vehicle {
     @Id
     private String id;
+
     private double latitude;
     private double longitude;
+
     private double bearing;
     private String route_id;
     private int occupancy_status;

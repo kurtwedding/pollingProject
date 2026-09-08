@@ -1,4 +1,4 @@
-package com.test.pollingProject.model.enums;
+package com.test.pollingProject.model.enums.routes;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
