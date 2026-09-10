@@ -20,6 +20,11 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * PollingScheduler defines the periodic running of scripts to keep the database
+ * populated with up-to-date information, based on the GTFS provider's updating
+ * schedule on data.
+ */
 @Component
 public class PollingScheduler {
 
@@ -46,6 +51,14 @@ public class PollingScheduler {
                 .build();
     }
 
+    /**
+     * This section runs once a day, to poll for updates in the Static data, trips,
+     * routes, and stops.
+     * 
+     * @throws Exception If one of the api endpoints does not return the correct
+     *                   data
+     * @see #getLiveGTFSData()
+     */
     @Scheduled(fixedRateString = "P1D") // Once a day
     private void getStaticGTFSData() throws Exception {
         System.out.println(
@@ -103,10 +116,10 @@ public class PollingScheduler {
     }
 
     /**
-     * Polls the specified API link for vehicle positions and stores it inside the
-     * database.
+     * Runs once a day to poll the GTFS API link for vehicle positions and store it
+     * inside the database.
      * 
-     * @throws RuntimeException If the RTFS-RT data is unable to be polled
+     * @throws RuntimeException If the RTFS realtime data is unable to be polled
      *                          successfully
      * @see #getStaticGTFSData()
      */

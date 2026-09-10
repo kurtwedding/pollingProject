@@ -1,0 +1,6 @@
+{"properties": [{
+  "name": "pollingproject.api.key",
+  "type": "java.lang.String",
+  "description": "The API key used to authenticate requests to the Polling Project API.",
+  "sourceType": "com.pollingproject.config.PollingProjectProperties"
+}]}

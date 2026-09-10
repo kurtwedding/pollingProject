@@ -1,5 +1,6 @@
 package com.test.pollingProject.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.pollingProject.model.enums.routes.RouteType;
 
 import jakarta.persistence.Entity;
@@ -19,13 +20,21 @@ import lombok.Setter;
 public class Route {
 
     @Id
-    private String route_id;
-    private String agency_id;
-    private String route_short_name;
-    private String route_long_name;
+    @JsonProperty("route_id")
+    private String routeId;
+
+    @JsonProperty("agency_id")
+    private String agencyId;
+
+    @JsonProperty("route_short_name")
+    private String routeShortName;
+    @JsonProperty("route_long_name")
+    private String routeLongName;
+
     private String route_color;
     private String route_text_color;
 
-    private RouteType route_type; // Runs RouteTypeConverter automatically for this field.
+    @JsonProperty("route_type")
+    private RouteType routeType; // Runs RouteTypeConverter automatically for this field.
 
 }

@@ -43,7 +43,16 @@ public enum RouteType {
                 return type;
         }
         // If the value is not one of the known above
-        System.out.println("UNKNOWN ROUTE TYPE: " + intCode);
+        System.out.println("Unknown route type code: " + intCode);
         return UNKNOWN;
+    }
+
+    public static RouteType fromLabel(String label) {
+        for (RouteType type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown route type label: " + label);
     }
 }
