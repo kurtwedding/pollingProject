@@ -22,9 +22,12 @@ public class Stop {
 
     // Required (+conditionally) Fields
     @Id
-    private String stop_id;
-
-    private String stop_name;
+    @JsonProperty("stop_id")
+    private String id;
+    @JsonProperty("stop_name")
+    private String name;
+    @JsonProperty("parent_station")
+    private String parentStation;
 
     // Mapping these under a different name to make bounds checking easier in
     // StopRepository.java
@@ -33,8 +36,9 @@ public class Stop {
     @JsonProperty("stop_lon")
     private Double longitude;
 
-    private WheelchairBoarding wheelchair_boarding;
-    private LocationType location_type;
-    private String parent_station;
+    @JsonProperty("wheelchair_boarding")
+    private WheelchairBoarding wheelchairBoarding = WheelchairBoarding.UNKNOWN; // Set default value to unknown
+    @JsonProperty("location_type")
+    private LocationType locationType = LocationType.UNKNOWN;
 
 }

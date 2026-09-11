@@ -11,7 +11,7 @@ public class WheelchairBoardingConverter implements AttributeConverter<Wheelchai
         if (attribute != null) {
             return attribute.getCode();
         }
-        return null;
+        return WheelchairBoarding.UNKNOWN.getCode();
     }
 
     @Override
@@ -19,7 +19,7 @@ public class WheelchairBoardingConverter implements AttributeConverter<Wheelchai
         if (dbData != null) {
             return WheelchairBoarding.fromCode(String.valueOf(dbData));
         }
-        return null;
+        return WheelchairBoarding.UNKNOWN;
     }
 
 }

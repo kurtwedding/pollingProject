@@ -22,7 +22,7 @@ public class VehicleController {
     }
 
     @GetMapping
-    public List<Vehicle> getAllVehicles() {
+    public List<Vehicle> getVehicles() {
         return vehicleRepository.findAll();
     }
 

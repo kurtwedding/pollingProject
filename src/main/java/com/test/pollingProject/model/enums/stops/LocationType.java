@@ -1,7 +1,6 @@
 package com.test.pollingProject.model.enums.stops;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 import lombok.Getter;
 
 /**
@@ -39,8 +38,17 @@ public enum LocationType {
                 return type;
         }
         // If the value is not one of the known above
-        System.out.println("UNKNOWN LOCATION TYPE: " + intCode);
+        System.out.println("Unknown location type code: " + intCode);
         return UNKNOWN;
+    }
+
+    public static LocationType fromLabel(String label) {
+        for (LocationType type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown location type label: " + label);
     }
 
 }

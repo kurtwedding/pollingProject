@@ -23,6 +23,22 @@ public class RouteController {
         this.routeRepository = routeRepository;
     }
 
+    /**
+     * API endpoint to return all of the routes available in the database, based on
+     * provided parameters
+     * 
+     * @param id        - (Optional) Parameter to filter by a specific route ID
+     * @param shortName - (Optional) Parameter to filter by a specific route short
+     *                  name
+     * @param agencyId  - (Optional) Parameter to filter by a specific agency ID
+     * @param routeType - (Optional) Parameter to filter by a specific route type
+     * @return List of routes that match the provided parameters
+     * 
+     * @see com.test.pollingProject.controller.StopController#getStops()
+     * @see com.test.pollingProject.controller.VehicleController#getVehicles()
+     * 
+     * @author Kurt Wedding-Speight
+     */
     @GetMapping()
     public List<Route> getRoutes(
             @RequestParam(required = false) String id,

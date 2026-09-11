@@ -11,7 +11,7 @@ public class LocationTypeConverter implements AttributeConverter<LocationType, I
         if (attribute != null) {
             return attribute.getCode();
         }
-        return null;
+        return LocationType.UNKNOWN.getCode(); // Defaults to nothing
     }
 
     @Override
@@ -19,6 +19,6 @@ public class LocationTypeConverter implements AttributeConverter<LocationType, I
         if (dbData != null) {
             return LocationType.fromCode(String.valueOf(dbData));
         }
-        return null;
+        return LocationType.UNKNOWN;
     }
 }

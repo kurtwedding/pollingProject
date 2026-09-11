@@ -31,7 +31,16 @@ public enum WheelchairBoarding {
                 return type;
         }
         // If the value is not one of the known above
-        System.out.println("UNKNOWN WHEELCHAIR BOARDING: " + intCode);
+        System.out.println("Unknown wheelchair boarding code: " + intCode);
         return UNKNOWN;
+    }
+
+    public static WheelchairBoarding fromLabel(String label) {
+        for (WheelchairBoarding type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown wheelchair boarding label: " + label);
     }
 }
