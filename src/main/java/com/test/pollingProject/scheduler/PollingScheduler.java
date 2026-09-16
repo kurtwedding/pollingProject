@@ -28,115 +28,123 @@ import java.util.List;
 @Component
 public class PollingScheduler {
 
-    private final ObjectMapper objectMapper;
-    private final StopRepository stopRepository;
-    private final RouteRepository routeRepository;
-    private final TripRepository tripRepository;
-    private final VehicleRepository vehicleRepository;
+	private final ObjectMapper objectMapper;
+	private final StopRepository stopRepository;
+	private final RouteRepository routeRepository;
+	private final TripRepository tripRepository;
+	private final VehicleRepository vehicleRepository;
 
-    private final RestClient restClient;
+	private final GtfsRtService gtfsRtService;
 
-    public PollingScheduler(ObjectMapper objectMapper, StopRepository stopRepository,
-            RouteRepository routeRepository, TripRepository tripRepository, VehicleRepository vehicleRepository) {
-        this.objectMapper = objectMapper;
-        this.stopRepository = stopRepository;
-        this.routeRepository = routeRepository;
-        this.tripRepository = tripRepository;
-        this.vehicleRepository = vehicleRepository;
+	private final RestClient restClient;
 
-        String apiKey = System.getProperty("GTFS_API_KEY");
-        this.restClient = RestClient.builder()
-                .baseUrl(System.getProperty("GTFS_API_URL"))
-                .defaultHeader("X-API-Key", apiKey)
-                .build();
-    }
+	public PollingScheduler(ObjectMapper objectMapper, StopRepository stopRepository,
+			RouteRepository routeRepository, TripRepository tripRepository,
+			VehicleRepository vehicleRepository,
+			GtfsRtService gtfsRtService) {
+		this.objectMapper = objectMapper;
+		this.stopRepository = stopRepository;
+		this.routeRepository = routeRepository;
+		this.tripRepository = tripRepository;
+		this.vehicleRepository = vehicleRepository;
+		this.gtfsRtService = gtfsRtService;
 
-    /**
-     * This section runs once a day, to poll for updates in the Static data, trips,
-     * routes, and stops.
-     * 
-     * @throws Exception If one of the api endpoints does not return the correct
-     *                   data
-     * @see #getLiveGTFSData()
-     */
-    @Scheduled(fixedRateString = "P1D") // Once a day
-    private void getStaticGTFSData() throws Exception {
-        System.out.println(
-                "[" + LocalTime.now() + "] Polling for Static GTFS Data...");
-        try {
-            LocalTime tempTime = LocalTime.now();
-            String jsonResponse = restClient.get()
-                    .uri("/gtfs/stops")
-                    .retrieve()
-                    .body(String.class); // Grab JSON API response
-            List<Stop> stops = objectMapper.readValue(jsonResponse, new TypeReference<List<Stop>>() {
-            });
+		String apiKey = System.getProperty("GTFS_API_KEY");
+		this.restClient = RestClient.builder()
+				.baseUrl(System.getProperty("GTFS_API_URL"))
+				.defaultHeader("X-API-Key", apiKey)
+				.build();
+	}
 
-            stopRepository.saveAll(stops); // Save the stops to the Database table
-            System.out.println(
-                    "[" + LocalTime.now() + "] Successfully polled stops data in: "
-                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+	/**
+	 * This section runs once a day, to poll for updates in the Static data, trips,
+	 * routes, and stops.
+	 * 
+	 * @throws Exception If one of the api endpoints does not return the correct
+	 *                   data
+	 * @see #getLiveGTFSData()
+	 */
+	@Scheduled(fixedRateString = "P1D") // Once a day
+	private void getStaticGTFSData() throws Exception {
+		System.out.println(
+				"[" + LocalTime.now() + "] Polling for Static GTFS Data...");
+		try {
+			LocalTime tempTime = LocalTime.now();
+			String jsonResponse = restClient.get()
+					.uri("/gtfs/stops")
+					.retrieve()
+					.body(String.class); // Grab JSON API response
+			List<Stop> stops = objectMapper.readValue(jsonResponse, new TypeReference<List<Stop>>() {
+			});
 
-        try {
-            LocalTime tempTime = LocalTime.now();
-            String jsonResponse = restClient.get()
-                    .uri("/gtfs/routes")
-                    .retrieve()
-                    .body(String.class); // Grab JSON API response
-            List<Route> routes = objectMapper.readValue(jsonResponse, new TypeReference<List<Route>>() {
-            });
+			stopRepository.saveAll(stops); // Save the stops to the Database table
+			System.out.println(
+					"[" + LocalTime.now() + "] Successfully polled stops data in: "
+							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
+							+ " milliseconds");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
-            routeRepository.saveAll(routes); // Save the routes to the Database table
-            System.out.println(
-                    "[" + LocalTime.now() + "] Successfully polled routes data in: "
-                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+		try {
+			LocalTime tempTime = LocalTime.now();
+			String jsonResponse = restClient.get()
+					.uri("/gtfs/routes")
+					.retrieve()
+					.body(String.class); // Grab JSON API response
+			List<Route> routes = objectMapper.readValue(jsonResponse, new TypeReference<List<Route>>() {
+			});
 
-        try {
-            LocalTime tempTime = LocalTime.now();
-            String jsonResponse = restClient.get()
-                    .uri("/gtfs/trips")
-                    .retrieve()
-                    .body(String.class); // Grab JSON API response
-            List<Trip> trips = objectMapper.readValue(jsonResponse, new TypeReference<List<Trip>>() {
-            });
+			routeRepository.saveAll(routes); // Save the routes to the Database table
+			System.out.println(
+					"[" + LocalTime.now() + "] Successfully polled routes data in: "
+							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
+							+ " milliseconds");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
-            tripRepository.saveAll(trips); // Save the routes to the Database table
-            System.out.println(
-                    "[" + LocalTime.now() + "] Successfully polled trips data in: "
-                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+		try {
+			LocalTime tempTime = LocalTime.now();
+			String jsonResponse = restClient.get()
+					.uri("/gtfs/trips")
+					.retrieve()
+					.body(String.class); // Grab JSON API response
+			List<Trip> trips = objectMapper.readValue(jsonResponse, new TypeReference<List<Trip>>() {
+			});
 
-    /**
-     * Runs once a day to poll the GTFS API link for vehicle positions and store it
-     * inside the database.
-     * 
-     * @throws RuntimeException If the RTFS realtime data is unable to be polled
-     *                          successfully
-     * @see #getStaticGTFSData()
-     */
-    @Scheduled(fixedRateString = "30s")
-    private void getLiveGTFSData() {
-        GtfsRtService gtfsRtService = new GtfsRtService(vehicleRepository, objectMapper);
+			tripRepository.saveAll(trips); // Save the routes to the Database table
+			System.out.println(
+					"[" + LocalTime.now() + "] Successfully polled trips data in: "
+							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
+							+ " milliseconds");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-        LocalTime tempTime = LocalTime.now();
-        System.out.println(
-                "[" + LocalTime.now() + "] Polling for Realtime GTFS Data...");
-        try {
-            gtfsRtService.pollAndSaveVehicles();
-            System.out.println(
-                    "[" + LocalTime.now() + "] Successfully polled data in: "
-                            + (Duration.between(tempTime, LocalTime.now()).toMillis()) + " milliseconds");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	/**
+	 * Runs once a day to poll the GTFS API link for vehicle positions and store it
+	 * inside the database.
+	 * 
+	 * @throws RuntimeException If the RTFS realtime data is unable to be polled
+	 *                          successfully
+	 * @see #getStaticGTFSData()
+	 */
+	@Scheduled(fixedRateString = "30s")
+	private void getLiveGTFSData() {
+
+		LocalTime tempTime = LocalTime.now();
+		System.out.println(
+				"[" + LocalTime.now() + "] Polling for Realtime GTFS Data...");
+		try {
+			gtfsRtService.pollAndSaveVehicles();
+			System.out.println(
+					"[" + LocalTime.now() + "] Successfully polled data in: "
+							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
+							+ " milliseconds");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
