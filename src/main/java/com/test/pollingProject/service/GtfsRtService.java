@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -21,13 +22,16 @@ public class GtfsRtService {
 
     private final RestClient restClient;
 
-    public GtfsRtService(VehicleRepository vehicleRepository, ObjectMapper objectMapper) {
+    public GtfsRtService(VehicleRepository vehicleRepository,
+            ObjectMapper objectMapper,
+
+            @Value("${GTFS_API_KEY}") String apiKey,
+            @Value("${GTFS_API_URL}") String apiUrl) {
         this.vehicleRepository = vehicleRepository;
         this.objectMapper = objectMapper;
 
-        String apiKey = System.getProperty("GTFS_API_KEY");
         this.restClient = RestClient.builder()
-                .baseUrl(System.getProperty("GTFS_API_URL"))
+                .baseUrl(apiUrl)
                 .defaultHeader("X-API-Key", apiKey)
                 .build();
     }

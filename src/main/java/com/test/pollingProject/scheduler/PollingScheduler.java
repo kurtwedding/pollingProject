@@ -1,5 +1,6 @@
 package com.test.pollingProject.scheduler;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -36,18 +37,22 @@ public class PollingScheduler {
 
 	private final RestClient restClient;
 
-	public PollingScheduler(ObjectMapper objectMapper, StopRepository stopRepository,
-			RouteRepository routeRepository, TripRepository tripRepository,
-			GtfsRtService gtfsRtService) {
+	public PollingScheduler(ObjectMapper objectMapper,
+			StopRepository stopRepository,
+			RouteRepository routeRepository,
+			TripRepository tripRepository,
+			GtfsRtService gtfsRtService,
+
+			@Value("${GTFS_API_KEY}") String apiKey,
+			@Value("${GTFS_API_URL}") String apiUrl) {
 		this.objectMapper = objectMapper;
 		this.stopRepository = stopRepository;
 		this.routeRepository = routeRepository;
 		this.tripRepository = tripRepository;
 		this.gtfsRtService = gtfsRtService;
 
-		String apiKey = System.getProperty("GTFS_API_KEY");
 		this.restClient = RestClient.builder()
-				.baseUrl(System.getProperty("GTFS_API_URL"))
+				.baseUrl(apiUrl)
 				.defaultHeader("X-API-Key", apiKey)
 				.build();
 	}
