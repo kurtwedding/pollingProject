@@ -11,7 +11,6 @@ import com.test.pollingProject.service.GtfsRtService;
 import com.test.pollingProject.store.RouteRepository;
 import com.test.pollingProject.store.StopRepository;
 import com.test.pollingProject.store.TripRepository;
-import com.test.pollingProject.store.VehicleRepository;
 
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -32,7 +31,6 @@ public class PollingScheduler {
 	private final StopRepository stopRepository;
 	private final RouteRepository routeRepository;
 	private final TripRepository tripRepository;
-	private final VehicleRepository vehicleRepository;
 
 	private final GtfsRtService gtfsRtService;
 
@@ -40,13 +38,11 @@ public class PollingScheduler {
 
 	public PollingScheduler(ObjectMapper objectMapper, StopRepository stopRepository,
 			RouteRepository routeRepository, TripRepository tripRepository,
-			VehicleRepository vehicleRepository,
 			GtfsRtService gtfsRtService) {
 		this.objectMapper = objectMapper;
 		this.stopRepository = stopRepository;
 		this.routeRepository = routeRepository;
 		this.tripRepository = tripRepository;
-		this.vehicleRepository = vehicleRepository;
 		this.gtfsRtService = gtfsRtService;
 
 		String apiKey = System.getProperty("GTFS_API_KEY");
