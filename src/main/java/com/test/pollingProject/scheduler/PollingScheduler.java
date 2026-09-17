@@ -1,9 +1,13 @@
 package com.test.pollingProject.scheduler;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import com.test.pollingProject.model.Route;
 import com.test.pollingProject.model.Stop;
@@ -13,7 +17,6 @@ import com.test.pollingProject.store.RouteRepository;
 import com.test.pollingProject.store.StopRepository;
 import com.test.pollingProject.store.TripRepository;
 
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
@@ -66,62 +69,48 @@ public class PollingScheduler {
 	 * @see #getLiveGTFSData()
 	 */
 	@Scheduled(fixedRateString = "P1D") // Once a day
-	private void getStaticGTFSData() throws Exception {
+	void getStaticGTFSData() throws Exception {
 		System.out.println(
 				"[" + LocalTime.now() + "] Polling for Static GTFS Data...");
-		try {
-			LocalTime tempTime = LocalTime.now();
-			String jsonResponse = restClient.get()
-					.uri("/gtfs/stops")
-					.retrieve()
-					.body(String.class); // Grab JSON API response
-			List<Stop> stops = objectMapper.readValue(jsonResponse, new TypeReference<List<Stop>>() {
-			});
 
-			stopRepository.saveAll(stops); // Save the stops to the Database table
-			System.out.println(
-					"[" + LocalTime.now() + "] Successfully polled stops data in: "
-							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
-							+ " milliseconds");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		// Polling Stops Data
+		try {
+			getStaticDataFromEndpoint("/gtfs/stops", Stop.class, stopRepository);
+		} catch (RuntimeException e) {
+			System.err.println("Unable to poll stops endpoint, skipping: " + e.getMessage());
 		}
 
+		// Polling Routes Data
 		try {
-			LocalTime tempTime = LocalTime.now();
-			String jsonResponse = restClient.get()
-					.uri("/gtfs/routes")
-					.retrieve()
-					.body(String.class); // Grab JSON API response
-			List<Route> routes = objectMapper.readValue(jsonResponse, new TypeReference<List<Route>>() {
-			});
-
-			routeRepository.saveAll(routes); // Save the routes to the Database table
-			System.out.println(
-					"[" + LocalTime.now() + "] Successfully polled routes data in: "
-							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
-							+ " milliseconds");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			getStaticDataFromEndpoint("/gtfs/routes", Route.class, routeRepository);
+		} catch (RuntimeException e) {
+			System.err.println("Unable to poll routes endpoint, skipping: " + e.getMessage());
 		}
 
+		// Polling Trips Data
 		try {
-			LocalTime tempTime = LocalTime.now();
-			String jsonResponse = restClient.get()
-					.uri("/gtfs/trips")
-					.retrieve()
-					.body(String.class); // Grab JSON API response
-			List<Trip> trips = objectMapper.readValue(jsonResponse, new TypeReference<List<Trip>>() {
-			});
-
-			tripRepository.saveAll(trips); // Save the routes to the Database table
-			System.out.println(
-					"[" + LocalTime.now() + "] Successfully polled trips data in: "
-							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
-							+ " milliseconds");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			getStaticDataFromEndpoint("/gtfs/trips", Trip.class, tripRepository);
+		} catch (RuntimeException e) {
+			System.err.println("Unable to poll trips endpoint, skipping: " + e.getMessage());
 		}
+	}
+
+	@Retryable(includes = { ResourceAccessException.class,
+			RestClientException.class }, maxRetries = 3, delay = 1000, multiplier = 2.0)
+	<T> void getStaticDataFromEndpoint(String uri, Class<T> cl, CrudRepository<T, ?> repository) {
+		LocalTime tempTime = LocalTime.now();
+		String jsonResponse = restClient.get()
+				.uri(uri)
+				.retrieve()
+				.body(String.class); // Grab JSON API response
+		List<T> objects = objectMapper.readValue(jsonResponse,
+				objectMapper.getTypeFactory().constructCollectionType(List.class, cl));
+		repository.saveAll(objects);
+
+		System.out.println(
+				"[" + LocalTime.now() + "] Successfully polled " + cl.getSimpleName() + " data in: "
+						+ (Duration.between(tempTime, LocalTime.now()).toMillis())
+						+ " milliseconds");
 	}
 
 	/**
@@ -133,7 +122,7 @@ public class PollingScheduler {
 	 * @see #getStaticGTFSData()
 	 */
 	@Scheduled(fixedRateString = "30s")
-	private void getLiveGTFSData() {
+	void getLiveGTFSData() {
 
 		LocalTime tempTime = LocalTime.now();
 		System.out.println(
@@ -144,8 +133,8 @@ public class PollingScheduler {
 					"[" + LocalTime.now() + "] Successfully polled data in: "
 							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
 							+ " milliseconds");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (RuntimeException e) {
+			System.err.println("Unable to poll endpoint, skipping: " + e.getMessage());
 		}
 	}
 }
