@@ -18,9 +18,14 @@ resource "aws_instance" "app_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
-  subnet_id              = module.vpc.private_subnets[0]
+  key_name = "macos-sshkey"
 
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
+
+  # Exposing to public subnet for SSH
+  subnet_id = module.vpc.public_subnets[0]
+
+  associate_public_ip_address = true
 
   tags = {
     Name = var.instance_name
