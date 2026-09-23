@@ -35,3 +35,14 @@ build/
 
 ### Local Environment Variables ###
 .env
+
+### Terraform ###
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+**/.terraform/*
+crash.log
+crash.*.log
+.terraformrc
+terraform.rc
