@@ -10,12 +10,6 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "db_password" {
-  description = "Database password"
-  type        = string
-  sensitive   = true
-}
-
 variable "ssh_address" {
     description = "Allowed IP to ssh into EC2 instance from"
     type = string

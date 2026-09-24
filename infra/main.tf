@@ -67,9 +67,7 @@ module "db" {
 
   db_name = "pollingdb"
   username = "dbadmin"
-  password_wo = var.db_password
-  password_wo_version = 1
-  manage_master_user_password = false
+  manage_master_user_password = true
 
   port = "5432"
   create_db_subnet_group = true
