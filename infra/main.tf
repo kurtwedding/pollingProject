@@ -27,6 +27,13 @@ resource "aws_instance" "app_server" {
 
   associate_public_ip_address = true
 
+  # This will run when the instance is created, auto installing psql and jre
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              sudo apt install openjdk-17-jre-headless postgresql-client -y
+              EOF
+
   tags = {
     Name = var.instance_name
   }
@@ -59,8 +66,10 @@ module "db" {
   allocated_storage = 20
 
   db_name = "pollingdb"
-  username = "dbadmin"  
+  username = "dbadmin"
   password_wo = var.db_password
+  password_wo_version = 1
+  manage_master_user_password = false
 
   port = "5432"
   create_db_subnet_group = true
