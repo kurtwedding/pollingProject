@@ -11,7 +11,18 @@ variable "instance_type" {
 }
 
 variable "ssh_address" {
-    description = "Allowed IP to ssh into EC2 instance from"
-    type = string
-    sensitive = true
+  description = "Allowed IP to ssh into EC2 instance from"
+  type = string
+  sensitive = true
+}
+
+variable "gtfs_provider_api_key" {
+  description = "The API key from the GTFS data provider"
+  type = string
+  sensitive = true
+}
+
+variable "gtfs_provider_api_url" {
+  description = "The API URL for the GTFS data provider"
+  type = string
 }

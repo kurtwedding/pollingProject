@@ -17,26 +17,26 @@ DB_SECRET=$(aws secretsmanager get-secret-value \
     --output text)
 DB_PASSWORD=$(echo "$DB_SECRET" | jq -r '.password')
 DB_USERNAME=$(echo "$DB_SECRET" | jq -r '.username')
-EXTERNAL_API_KEY=$(aws secretsmanager get-secret-value \
-    --secret-id pollingproject/external_api_key \
+INTERNAL_API_KEY=$(aws secretsmanager get-secret-value \
+    --secret-id gtfs/internal_api_key \
     --region ap-southeast-2 \
     --query SecretString \
     --output text)
 GTFS_API_KEY=$(aws secretsmanager get-secret-value \
-    --secret-id pollingproject/gtfs_api_key \
+    --secret-id gtfs/external_api_key \
     --region ap-southeast-2 \
     --query SecretString \
     --output text)
 GTFS_ENDPOINT=$(aws secretsmanager get-secret-value \
-    --secret-id pollingproject/gtfs_endpoint \
+    --secret-id gtfs/external_api_url \
     --region ap-southeast-2 \
     --query SecretString \
     --output text)
 
-printf "[$MAGENTA$(date +"%T")$NC] Writing .env.prod file\n"
-cat > .env.prod << EOF
+printf "[$MAGENTA$(date +"%T")$NC] Writing .env file\n"
+cat > .env << EOF
 # This data is all created in deploy.sh - with values pulled from AWS secretsmanager
-# DO NOT PUSH THIS TO THE REPO
+# DO NOT PUSH THIS TO THE REPO - ADD TO .gitignore
 
 GTFS_API_KEY=${GTFS_API_KEY}
 GTFS_API_URL=${GTFS_ENDPOINT}
@@ -44,19 +44,19 @@ GTFS_API_URL=${GTFS_ENDPOINT}
 SPRING_DATASOURCE_URL=jdbc:postgresql://${RDS_ENDPOINT}/pollingdb
 SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
 SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
-POLLINGPROJECT_API_KEY=${EXTERNAL_API_KEY}
+POLLINGPROJECT_API_KEY=${INTERNAL_API_KEY}
 EOF
 
 printf "[$MAGENTA$(date +"%T")$NC] Compiling Spring Boot project\n"
 mvn clean package -DskipTests
 
 printf "[$MAGENTA$(date +"%T")$NC] Uploading .env file to the EC2 instance\n"
-scp -i .ssh/macos-sshkey.pem .env.prod ubuntu@$EC2_IP:~/.env
+scp -i .ssh/gtfs-ssh-keypair.pem .env ubuntu@$EC2_IP:~/.env
 
 printf "[$MAGENTA$(date +"%T")$NC] Copying jar file to remote server\n"
-scp -i .ssh/macos-sshkey.pem target/pollingProject-0.0.1-SNAPSHOT.jar ubuntu@$EC2_IP:~/
+scp -i .ssh/gtfs-ssh-keypair.pem target/pollingProject-0.0.1-SNAPSHOT.jar ubuntu@$EC2_IP:~/
 
 printf "[$MAGENTA$(date +"%T")$NC] Launching app on EC2 instance\n"
-ssh -i .ssh/macos-sshkey.pem ubuntu@$EC2_IP "nohup java -jar ~/pollingProject-0.0.1-SNAPSHOT.jar > app.log 2>&1 &"
+ssh -i .ssh/gtfs-ssh-keypair.pem ubuntu@$EC2_IP "nohup java -jar ~/pollingProject-0.0.1-SNAPSHOT.jar > app.log 2>&1 &"
 
 printf "[$MAGENTA$(date +"%T")$NC] Deployment completed"
