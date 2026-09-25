@@ -35,3 +35,14 @@ build/
 
 ### Local Environment Variables ###
 .env
+*.env
+
+### Terraform ###
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform/
+
+.ssh/
+
+.DS_Store
