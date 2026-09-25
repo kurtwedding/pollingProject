@@ -13,3 +13,9 @@ output "rds_endpoint" {
   value = module.db.db_instance_endpoint
   sensitive = true
 }
+
+output "rds_db_secret_id" {
+  description = "The secret id of the aws managed database password"
+  value = module.db.db_instance_master_user_secret_arn
+  sensitive = true
+}
