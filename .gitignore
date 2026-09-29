@@ -44,5 +44,7 @@ build/
 .terraform/
 
 .ssh/
+logs/
 
 .DS_Store
+ROADMAP.md

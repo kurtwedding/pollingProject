@@ -17,10 +17,10 @@ import com.test.pollingProject.store.RouteRepository;
 import com.test.pollingProject.store.StopRepository;
 import com.test.pollingProject.store.TripRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -28,6 +28,7 @@ import java.util.List;
  * populated with up-to-date information, based on the GTFS provider's updating
  * schedule on data.
  */
+@Slf4j
 @Component
 public class PollingScheduler {
 
@@ -68,73 +69,76 @@ public class PollingScheduler {
 	 *                   data
 	 * @see #getLiveGTFSData()
 	 */
-	@Scheduled(fixedRateString = "P1D") // Once a day
+	@Scheduled(fixedRateString = "P${STATIC_POLLING_INTERVAL:1d}") // Once a day
 	void getStaticGTFSData() throws Exception {
-		System.out.println(
-				"[" + LocalTime.now() + "] Polling for Static GTFS Data...");
 
 		// Polling Stops Data
 		try {
 			getStaticDataFromEndpoint("/gtfs/stops", Stop.class, stopRepository);
 		} catch (RuntimeException e) {
-			System.err.println("Unable to poll stops endpoint, skipping: " + e.getMessage());
+			log.error("poll failed feed=stops", e);
 		}
 
 		// Polling Routes Data
 		try {
 			getStaticDataFromEndpoint("/gtfs/routes", Route.class, routeRepository);
 		} catch (RuntimeException e) {
-			System.err.println("Unable to poll routes endpoint, skipping: " + e.getMessage());
+			log.error("poll failed feed=routes", e);
 		}
 
 		// Polling Trips Data
 		try {
 			getStaticDataFromEndpoint("/gtfs/trips", Trip.class, tripRepository);
 		} catch (RuntimeException e) {
-			System.err.println("Unable to poll trips endpoint, skipping: " + e.getMessage());
+			log.error("Poll failed feed=trips", e);
 		}
 	}
 
 	@Retryable(includes = { ResourceAccessException.class,
 			RestClientException.class }, maxRetries = 3, delay = 1000, multiplier = 2.0)
 	<T> void getStaticDataFromEndpoint(String uri, Class<T> cl, CrudRepository<T, ?> repository) {
-		LocalTime tempTime = LocalTime.now();
-		String jsonResponse = restClient.get()
-				.uri(uri)
-				.retrieve()
-				.body(String.class); // Grab JSON API response
-		List<T> objects = objectMapper.readValue(jsonResponse,
-				objectMapper.getTypeFactory().constructCollectionType(List.class, cl));
-		repository.saveAll(objects);
 
-		System.out.println(
-				"[" + LocalTime.now() + "] Successfully polled " + cl.getSimpleName() + " data in: "
-						+ (Duration.between(tempTime, LocalTime.now()).toMillis())
-						+ " milliseconds");
+		log.debug("Polling static gtfs feed={}", cl.getSimpleName());
+		long start = System.nanoTime();
+
+		try {
+			String jsonResponse = restClient.get()
+					.uri(uri)
+					.retrieve()
+					.body(String.class); // Grab JSON API response
+			List<T> objects = objectMapper.readValue(jsonResponse,
+					objectMapper.getTypeFactory().constructCollectionType(List.class, cl));
+			repository.saveAll(objects);
+
+			log.info("Poll ok feed={} records={} durationMs={}",
+					cl.getSimpleName(), objects.size(),
+					Duration.ofNanos(System.nanoTime() - start).toMillis());
+		} catch (RestClientException e) {
+			log.warn("Poll attempt failed feed={} durationMs={}; {}",
+					cl.getSimpleName(), Duration.ofNanos(System.nanoTime() - start).toMillis(), e.getMessage());
+			throw e;
+		}
 	}
 
 	/**
-	 * Runs once a day to poll the GTFS API link for vehicle positions and store it
+	 * Runs every 30s to poll the GTFS API link for vehicle positions and store them
 	 * inside the database.
 	 * 
 	 * @throws RuntimeException If the RTFS realtime data is unable to be polled
 	 *                          successfully
 	 * @see #getStaticGTFSData()
 	 */
-	@Scheduled(fixedRateString = "30s")
+	@Scheduled(fixedRateString = "${LIVE_POLLING_INTERVAL:30s}")
 	void getLiveGTFSData() {
 
-		LocalTime tempTime = LocalTime.now();
-		System.out.println(
-				"[" + LocalTime.now() + "] Polling for Realtime GTFS Data...");
+		log.debug("Polling live gtfs-rt");
+		long start = System.nanoTime();
+
 		try {
 			gtfsRtService.pollAndSaveVehicles();
-			System.out.println(
-					"[" + LocalTime.now() + "] Successfully polled data in: "
-							+ (Duration.between(tempTime, LocalTime.now()).toMillis())
-							+ " milliseconds");
 		} catch (RuntimeException e) {
-			System.err.println("Unable to poll endpoint, skipping: " + e.getMessage());
+			log.error("Poll failed feed=Vehicle durationMs={}",
+					Duration.ofNanos(System.nanoTime() - start).toMillis(), e);
 		}
 	}
 }
