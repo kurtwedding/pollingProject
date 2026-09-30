@@ -7,12 +7,15 @@ import com.test.pollingProject.model.Route;
 import com.test.pollingProject.model.enums.routes.RouteType;
 import com.test.pollingProject.store.RouteRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/routes")
 public class RouteController {
@@ -63,8 +66,13 @@ public class RouteController {
             spec = spec.and((route, query, cb) -> cb.equal(route.get("routeType"), RouteType.fromLabel(routeType)));
         }
 
+        List<Route> results = routeRepository.findAll(spec);
+
+        log.debug("api call made feed=Route records={}",
+                results.size());
+
         // Return all of the entries that match the specification
-        return routeRepository.findAll(spec);
+        return results;
     }
 
 }

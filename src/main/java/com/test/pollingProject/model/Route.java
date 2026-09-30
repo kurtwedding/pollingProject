@@ -3,6 +3,7 @@ package com.test.pollingProject.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.pollingProject.model.enums.routes.RouteType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -20,6 +21,7 @@ import lombok.Setter;
 public class Route {
 
     @Id
+    @Column(name = "route_id")
     @JsonProperty("route_id")
     private String routeId;
 

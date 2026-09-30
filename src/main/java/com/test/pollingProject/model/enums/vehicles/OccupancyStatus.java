@@ -40,4 +40,13 @@ public enum OccupancyStatus {
         System.out.println("UNKNOWN LOCATION TYPE: " + intCode);
         return NO_DATA_AVAILABLE;
     }
+
+    public static OccupancyStatus fromLabel(String label) {
+        for (OccupancyStatus type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown occupancy status label: " + label);
+    }
 }

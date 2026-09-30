@@ -1,5 +1,6 @@
 package com.test.pollingProject.service;
 
+import com.test.pollingProject.store.RouteRepository;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 @Service
 public class GtfsRtService {
+	private final RouteRepository routeRepository;
 	private final VehicleRepository vehicleRepository;
 	private final ObjectMapper objectMapper;
 
@@ -32,7 +34,7 @@ public class GtfsRtService {
 			ObjectMapper objectMapper,
 
 			@Value("${GTFS_API_KEY}") String apiKey,
-			@Value("${GTFS_API_URL}") String apiUrl) {
+			@Value("${GTFS_API_URL}") String apiUrl, RouteRepository routeRepository) {
 		this.vehicleRepository = vehicleRepository;
 		this.objectMapper = objectMapper;
 
@@ -40,6 +42,7 @@ public class GtfsRtService {
 				.baseUrl(apiUrl)
 				.defaultHeader("X-API-Key", apiKey)
 				.build();
+		this.routeRepository = routeRepository;
 	}
 
 	/**
@@ -86,11 +89,12 @@ public class GtfsRtService {
 		Optional<GtfsRtDTO.VehicleExterior> vehicleDTO = Optional.ofNullable(entity.vehicle);
 		return Vehicle.builder()
 				.id(vehicleDTO.map(v -> v.vehicle).map(v -> v.id).orElse("UNKNOWN"))
-				.route_id(vehicleDTO.map(v -> v.trip).map(t -> t.route_id).orElse("UNKNOWN"))
 				.latitude(vehicleDTO.map(v -> v.position).map(p -> p.latitude).orElse(0.0))
 				.longitude(vehicleDTO.map(v -> v.position).map(p -> p.longitude).orElse(0.0))
 				.bearing(vehicleDTO.map(v -> v.position).map(p -> p.bearing).orElse(0.0))
-				.occupancy_status(vehicleDTO.map(v -> v.occupancy_status)
+				.route(routeRepository.getReferenceById(
+						vehicleDTO.map(v -> v.trip).map(t -> t.route_id).orElse("UNKNOWN")))
+				.occupancyStatus(vehicleDTO.map(v -> v.occupancy_status)
 						.orElse(OccupancyStatus.NO_DATA_AVAILABLE))
 				.build();
 	}

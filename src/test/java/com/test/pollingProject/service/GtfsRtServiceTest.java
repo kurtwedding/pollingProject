@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.test.pollingProject.service.GtfsRtService;
 import com.test.pollingProject.store.VehicleRepository;
 
 import tools.jackson.databind.ObjectMapper;
