@@ -36,16 +36,18 @@ public class SecurityConfig {
 
 		http.exceptionHandling(ex -> ex
 				.authenticationEntryPoint((request, response, authException) -> {
-					log.warn("Auth rejected path={} ip={} reason={}",
+					log.warn("Auth rejected path={} ip={} status={} reason={}",
 							request.getRequestURI(),
 							request.getRemoteAddr(),
+							HttpServletResponse.SC_UNAUTHORIZED,
 							authException.getMessage());
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				})
 				.accessDeniedHandler((request, response, accessDenied) -> {
-					log.warn("Access denied path={} ip={}",
+					log.warn("Access denied path={} ip={} status={}",
 							request.getRequestURI(),
-							request.getRemoteAddr());
+							request.getRemoteAddr(),
+							HttpServletResponse.SC_FORBIDDEN);
 					response.sendError(HttpServletResponse.SC_FORBIDDEN);
 				}));
 		return http.build();
