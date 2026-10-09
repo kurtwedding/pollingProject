@@ -4,6 +4,8 @@ The goal of this project is to synchronize and store both real-time and static t
 ## Overview
 This application acts as a middle-tier data collector. It polls external transit apis periodically to fetch static transit data (like stops, routes, and trips) and real-time transit data (Vehicle positions, occupancy) then it stores it in a PostgreSQL database for usage by other applications.
 
+[![codecov](https://codecov.io/github/kurtwedding/pollingProject/graph/badge.svg?token=LK50ULPBC0)](https://codecov.io/github/kurtwedding/pollingProject)
+
 ## Key Features
 * Automated Scheduling:
   * Static Transit Data: Synchronizes stops, routes, and trips daily - to account for transit route updates.
