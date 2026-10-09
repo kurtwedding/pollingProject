@@ -16,13 +16,12 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # Replace with ./mvnw clean verify if using Maven
-    - name: Build and Test with Gradle
-      run: ./gradlew build jacocoTestReport 
+    - name: Build and Test with Maven
+      run: ./mvnw clean verify
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
-        files: '**/target/site/jacoco/jacoco.xml' # Path to your XML
+        files: '**/target/site/jacoco/jacoco.xml'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
