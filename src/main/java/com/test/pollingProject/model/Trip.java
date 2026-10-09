@@ -30,8 +30,8 @@ public class Trip {
     private String origin_stop_id;
     private String destination_stop_id;
 
-    private Direction direction_id;
-    private BikesAllowed bikes_allowed;
-    private WheelchairAccessible wheelchair_accessible;
+    private Direction direction_id = Direction.UNKNOWN;
+    private BikesAllowed bikes_allowed = BikesAllowed.UNKNOWN;
+    private WheelchairAccessible wheelchair_accessible = WheelchairAccessible.UNKNOWN;
 
 }

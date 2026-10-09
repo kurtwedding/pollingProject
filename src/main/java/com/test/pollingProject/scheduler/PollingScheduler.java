@@ -1,6 +1,8 @@
 package com.test.pollingProject.scheduler;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +32,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "polling.enabled", havingValue = "true", matchIfMissing = true)
 public class PollingScheduler {
 
 	private final ObjectMapper objectMapper;

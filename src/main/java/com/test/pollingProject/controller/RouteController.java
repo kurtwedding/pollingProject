@@ -54,7 +54,7 @@ public class RouteController {
         Specification<Route> spec = Specification.unrestricted();
 
         if (id != null) { // If id was provided, add it to the specification
-            spec = spec.and((route, query, cb) -> cb.equal(route.get("agencyId"), agencyId));
+            spec = spec.and((route, query, cb) -> cb.equal(route.get("routeId"), id));
         }
         if (shortName != null) { // If shortName was provided, add it to the specification
             spec = spec.and((route, query, cb) -> cb.equal(route.get("routeShortName"), shortName));
