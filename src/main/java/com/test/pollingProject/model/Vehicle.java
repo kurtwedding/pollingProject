@@ -21,10 +21,10 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Builder
+@Table(name = "vehicles")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "vehicles")
-@Builder
 public class Vehicle {
     @Id
     private String id;
