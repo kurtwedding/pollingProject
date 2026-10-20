@@ -32,17 +32,18 @@ public class GtfsRtService {
 
 	public GtfsRtService(VehicleRepository vehicleRepository,
 			ObjectMapper objectMapper,
-
+			RestClient.Builder builder,
 			@Value("${GTFS_API_KEY}") String apiKey,
-			@Value("${GTFS_API_URL}") String apiUrl, RouteRepository routeRepository) {
+			@Value("${GTFS_API_URL}") String apiUrl,
+			RouteRepository routeRepository) {
 		this.vehicleRepository = vehicleRepository;
 		this.objectMapper = objectMapper;
+		this.routeRepository = routeRepository;
 
-		this.restClient = RestClient.builder()
+		this.restClient = builder
 				.baseUrl(apiUrl)
 				.defaultHeader("X-API-Key", apiKey)
 				.build();
-		this.routeRepository = routeRepository;
 	}
 
 	/**

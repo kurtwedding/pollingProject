@@ -11,7 +11,7 @@ public class WheelchairAccessibleConverter implements AttributeConverter<Wheelch
         if (attribute != null) {
             return attribute.getCode();
         }
-        return null;
+        return WheelchairAccessible.UNKNOWN.getCode();
     }
 
     @Override
@@ -19,7 +19,7 @@ public class WheelchairAccessibleConverter implements AttributeConverter<Wheelch
         if (dbData != null) {
             return WheelchairAccessible.fromCode(String.valueOf(dbData));
         }
-        return null;
+        return WheelchairAccessible.UNKNOWN;
     }
 
 }

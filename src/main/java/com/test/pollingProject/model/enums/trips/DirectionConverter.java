@@ -1,7 +1,9 @@
 package com.test.pollingProject.model.enums.trips;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
+@Converter(autoApply = true)
 public class DirectionConverter implements AttributeConverter<Direction, Integer> {
 
     @Override
@@ -9,7 +11,7 @@ public class DirectionConverter implements AttributeConverter<Direction, Integer
         if (attribute != null) {
             return attribute.getCode();
         }
-        return null;
+        return Direction.UNKNOWN.getCode();
     }
 
     @Override
@@ -17,7 +19,7 @@ public class DirectionConverter implements AttributeConverter<Direction, Integer
         if (dbData != null) {
             return Direction.fromCode(String.valueOf(dbData));
         }
-        return null;
+        return Direction.UNKNOWN;
     }
 
 }

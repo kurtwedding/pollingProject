@@ -1,7 +1,6 @@
 package com.test.pollingProject.scheduler;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.resilience.annotation.Retryable;
@@ -49,6 +48,7 @@ public class PollingScheduler {
 			RouteRepository routeRepository,
 			TripRepository tripRepository,
 			GtfsRtService gtfsRtService,
+			RestClient.Builder builder,
 
 			@Value("${GTFS_API_KEY}") String apiKey,
 			@Value("${GTFS_API_URL}") String apiUrl) {
@@ -58,7 +58,7 @@ public class PollingScheduler {
 		this.tripRepository = tripRepository;
 		this.gtfsRtService = gtfsRtService;
 
-		this.restClient = RestClient.builder()
+		this.restClient = builder
 				.baseUrl(apiUrl)
 				.defaultHeader("X-API-Key", apiKey)
 				.build();
