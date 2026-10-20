@@ -12,20 +12,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @Table(name = "vehicles")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Vehicle {
+
+    public Vehicle() {
+    }
+
     @Id
     private String id;
 
@@ -41,6 +39,5 @@ public class Vehicle {
     private Route route;
 
     @JsonProperty("occupancy_status")
-    @Builder.Default
     private OccupancyStatus occupancyStatus = OccupancyStatus.NO_DATA_AVAILABLE;
 }

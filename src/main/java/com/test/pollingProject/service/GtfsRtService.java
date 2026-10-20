@@ -88,15 +88,18 @@ public class GtfsRtService {
 	private Vehicle toEntity(GtfsRtDTO.Entity entity) {
 
 		Optional<GtfsRtDTO.VehicleExterior> vehicleDTO = Optional.ofNullable(entity.vehicle);
-		return Vehicle.builder()
-				.id(vehicleDTO.map(v -> v.vehicle).map(v -> v.id).orElse("UNKNOWN"))
-				.latitude(vehicleDTO.map(v -> v.position).map(p -> p.latitude).orElse(0.0))
-				.longitude(vehicleDTO.map(v -> v.position).map(p -> p.longitude).orElse(0.0))
-				.bearing(vehicleDTO.map(v -> v.position).map(p -> p.bearing).orElse(0.0))
-				.route(routeRepository.getReferenceById(
-						vehicleDTO.map(v -> v.trip).map(t -> t.route_id).orElse("UNKNOWN")))
-				.occupancyStatus(vehicleDTO.map(v -> v.occupancy_status)
-						.orElse(OccupancyStatus.NO_DATA_AVAILABLE))
-				.build();
+
+		Vehicle vehicle = new Vehicle();
+
+		vehicle.setId(vehicleDTO.map(v -> v.vehicle).map(v -> v.id).orElse("UNKNOWN"));
+		vehicle.setLatitude(vehicleDTO.map(v -> v.position).map(p -> p.latitude).orElse(0.0));
+		vehicle.setLongitude(vehicleDTO.map(v -> v.position).map(p -> p.longitude).orElse(0.0));
+		vehicle.setBearing(vehicleDTO.map(v -> v.position).map(p -> p.bearing).orElse(0.0));
+		vehicle.setRoute(routeRepository.getReferenceById(
+				vehicleDTO.map(v -> v.trip).map(t -> t.route_id).orElse("UNKNOWN")));
+		vehicle.setOccupancyStatus(vehicleDTO.map(v -> v.occupancy_status)
+				.orElse(OccupancyStatus.NO_DATA_AVAILABLE));
+
+		return vehicle;
 	}
 }

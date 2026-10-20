@@ -15,8 +15,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "routes")
 public class Route {
 
@@ -37,6 +35,6 @@ public class Route {
     private String route_text_color;
 
     @JsonProperty("route_type")
-    private RouteType routeType; // Runs RouteTypeConverter automatically for this field.
+    private RouteType routeType = RouteType.UNKNOWN; // Runs RouteTypeConverter automatically for this field.
 
 }
