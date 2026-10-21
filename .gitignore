@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .prettierrc
+.DS_Store
 
 ### STS ###
 .apt_generated
@@ -36,15 +37,22 @@ build/
 ### Local Environment Variables ###
 .env
 *.env
-
-### Terraform ###
-*.tfstate
-*.tfstate.backup
-*.tfvars
-.terraform/
+.env.prod
 
 .ssh/
 logs/
 
-.DS_Store
 ROADMAP.md
+
+### Terraform ###
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+**/.terraform/*
+crash.log
+crash.*.log
+.terraformrc
+terraform.rc
+*.pem
