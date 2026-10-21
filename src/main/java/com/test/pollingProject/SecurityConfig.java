@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +20,29 @@ import lombok.extern.slf4j.Slf4j;
 public class SecurityConfig {
 	@Value("${pollingproject.api.key}")
 	private String API_KEY;
+
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return (request, response, authException) -> {
+			log.warn("Auth rejected path={} ip={} status={} reason={}",
+					request.getRequestURI(),
+					request.getRemoteAddr(),
+					HttpServletResponse.SC_UNAUTHORIZED,
+					authException.getMessage());
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		};
+	}
+
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return (request, response, accessDenied) -> {
+			log.warn("Access denied path={} ip={} status={}",
+					request.getRequestURI(),
+					request.getRemoteAddr(),
+					HttpServletResponse.SC_FORBIDDEN);
+			response.sendError(HttpServletResponse.SC_FORBIDDEN);
+		};
+	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,21 +60,8 @@ public class SecurityConfig {
 				.addFilterBefore(new ApiKeyAuthFilter(API_KEY), UsernamePasswordAuthenticationFilter.class);
 
 		http.exceptionHandling(ex -> ex
-				.authenticationEntryPoint((request, response, authException) -> {
-					log.warn("Auth rejected path={} ip={} status={} reason={}",
-							request.getRequestURI(),
-							request.getRemoteAddr(),
-							HttpServletResponse.SC_UNAUTHORIZED,
-							authException.getMessage());
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-				})
-				.accessDeniedHandler((request, response, accessDenied) -> {
-					log.warn("Access denied path={} ip={} status={}",
-							request.getRequestURI(),
-							request.getRemoteAddr(),
-							HttpServletResponse.SC_FORBIDDEN);
-					response.sendError(HttpServletResponse.SC_FORBIDDEN);
-				}));
+				.authenticationEntryPoint(authenticationEntryPoint())
+				.accessDeniedHandler(accessDeniedHandler()));
 		return http.build();
 	}
 }

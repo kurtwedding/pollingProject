@@ -7,14 +7,12 @@ import com.test.pollingProject.model.enums.stops.WheelchairBoarding;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.Id;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "stops")
 public class Stop {
 
