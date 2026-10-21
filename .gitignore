@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .prettierrc
+.DS_Store
 
 ### STS ###
 .apt_generated
@@ -37,14 +38,14 @@ build/
 .env
 *.env
 
+.ssh/
+logs/
+
+ROADMAP.md
+
 ### Terraform ###
+infra/
 *.tfstate
 *.tfstate.backup
 *.tfvars
 .terraform/
-
-.ssh/
-logs/
-
-.DS_Store
-ROADMAP.md
