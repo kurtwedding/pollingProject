@@ -35,4 +35,13 @@ public enum BikesAllowed {
         return UNKNOWN;
     }
 
+    public static BikesAllowed fromLabel(String label) {
+        for (BikesAllowed type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown bikes allowed label: " + label);
+    }
+
 }

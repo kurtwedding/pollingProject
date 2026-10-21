@@ -35,4 +35,13 @@ public enum WheelchairAccessible {
         return UNKNOWN;
     }
 
+    public static WheelchairAccessible fromLabel(String label) {
+        for (WheelchairAccessible type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown wheelchair access label: " + label);
+    }
+
 }

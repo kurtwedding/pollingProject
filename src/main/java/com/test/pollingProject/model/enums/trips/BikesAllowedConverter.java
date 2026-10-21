@@ -11,7 +11,7 @@ public class BikesAllowedConverter implements AttributeConverter<BikesAllowed, I
         if (attribute != null) {
             return attribute.getCode();
         }
-        return null;
+        return BikesAllowed.UNKNOWN.getCode();
     }
 
     @Override
@@ -19,7 +19,7 @@ public class BikesAllowedConverter implements AttributeConverter<BikesAllowed, I
         if (dbData != null) {
             return BikesAllowed.fromCode(String.valueOf(dbData));
         }
-        return null;
+        return BikesAllowed.UNKNOWN;
     }
 
 }

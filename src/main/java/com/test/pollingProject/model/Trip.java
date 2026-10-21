@@ -7,16 +7,12 @@ import com.test.pollingProject.model.enums.trips.WheelchairAccessible;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "trips")
 public class Trip {
 
@@ -30,8 +26,8 @@ public class Trip {
     private String origin_stop_id;
     private String destination_stop_id;
 
-    private Direction direction_id;
-    private BikesAllowed bikes_allowed;
-    private WheelchairAccessible wheelchair_accessible;
+    private Direction direction_id = Direction.UNKNOWN;
+    private BikesAllowed bikes_allowed = BikesAllowed.UNKNOWN;
+    private WheelchairAccessible wheelchair_accessible = WheelchairAccessible.UNKNOWN;
 
 }

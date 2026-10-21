@@ -34,4 +34,13 @@ public enum Direction {
         System.out.println("UNKNOWN DIRECTION: " + intCode);
         return UNKNOWN;
     }
+
+    public static Direction fromLabel(String label) {
+        for (Direction type : values()) {
+            if (type.label.equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown direction label: " + label);
+    }
 }

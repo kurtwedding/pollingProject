@@ -36,13 +36,20 @@ build/
 
 ### Local Environment Variables ###
 .env
+*.env
 .env.prod
+
+.ssh/
+logs/
+
+ROADMAP.md
 
 ### Terraform ###
 *.tfstate
 *.tfstate.*
 *.tfvars
 *.tfvars.json
+.terraform/
 **/.terraform/*
 crash.log
 crash.*.log

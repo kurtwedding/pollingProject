@@ -1,0 +1,27 @@
+name: Java CI with Codecov
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v7
+
+    - name: Set up JDK
+      uses: actions/setup-java@v6
+      with:
+        distribution: 'temurin'
+        java-version: '25'
+
+    - name: Build and Test with Maven
+      run: ./mvnw clean verify
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: '**/target/site/jacoco/jacoco.xml'
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

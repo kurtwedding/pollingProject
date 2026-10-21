@@ -8,7 +8,10 @@ public class RouteTypeConverter implements AttributeConverter<RouteType, Integer
 
     @Override
     public Integer convertToDatabaseColumn(RouteType attribute) {
-        return attribute.getCode();
+        if (attribute != null) {
+            return attribute.getCode();
+        }
+        return RouteType.UNKNOWN.getCode();
     }
 
     @Override
