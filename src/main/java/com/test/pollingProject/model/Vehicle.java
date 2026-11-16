@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +26,12 @@ public class Vehicle {
     }
 
     @Id
+    @NotNull
     private String id;
 
+    @NotNull
     private double latitude;
+    @NotNull
     private double longitude;
 
     private double bearing;
@@ -38,6 +42,7 @@ public class Vehicle {
     @NotFound(action = NotFoundAction.IGNORE)
     private Route route;
 
+    @NotNull
     @JsonProperty("occupancy_status")
     private OccupancyStatus occupancyStatus = OccupancyStatus.NO_DATA_AVAILABLE;
 }
