@@ -13,34 +13,29 @@ This application acts as a middle-tier data collector. It polls external transit
 * Data Persistence: Utilizes Spring Data JPA with Hibernate for storage and batch processing of API requests.
 * API Security: Implements custom API Key authentication filters to secure REST API endpoints.
 * Resilience: Configured with retry logic for reliable data fetching, independent of network.
+* Automatic Deployment: This application automatically deploys to the aws cloud to ensure high-reliability.
 
 ## Technologies
-* Java 17+
+* Java 25+
 * Spring Boot (Web, JPA, Scheduling, Security)
 * PostgreSQL
 * Maven
+* Terraform
+* AWS Cloud (EC2, RDS, Secrets Manager, VPC)
 
 ## Configuration
-You will first need a PostgreSQL database to have the data stored in, and a user with read/write access to that database.
+You will first need to have valid aws credentials/token on the device you are launching the cloud from, using `aws login` or `aws sso login
 
-The application requires these following environment variables. Ensure that they are stored as environment variables, or declared in a `.env` file.
+All of the environment variables for this app are deployed automatically by AWS, but terraform will prompt you for the following variables if they have not already been defined in a `terraform.tfvars` file.
+
 |Variable|Description|
 |--------|-----------|
-|`SPRING_DATASOURCE_URL`|JDBC URL to the PostgreSQL database (localhost:8080)|
-|`SPRING_DATASOURCE_USERNAME` |Username for the psql database|
-|`SPRING_DATASOURCE_PASSWORD` |Password for the psql database|
-|`POLLINGPROJECT_API_KEY`     |API key for accessing this app's endpoint|
-|`GTFS_API_KEY`               |API key used to poll the external GTFS provider|
-|`GTFS_API_URL`               |Base URL of the external GTFS provider|
-
-The layout for these can be found in the `.env.example` file
+|`gtfs_provider_api_key`               |API key used to poll the GTFS provider|
+|`gtfs_provider_api_url`               |Base URL of the GTFS provider|
+| `ssh_address` | CIDR block of addresses allowed to ssh into the EC2| 
 
 ## How to build and run
-This project is created using the Maven Wrapper.
-1. Build the project:
-   - `./mvnw clean install`
-2. Run the application:
-   - `./mvnw sprint-boot:run`
+Once configured, you can run the app by running `deploy.sh` in the base project directory
 
 ## Roadmap
 - [ ] Add webhook integration to keep front-end devices up to date with live information
