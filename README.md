@@ -24,7 +24,7 @@ This application acts as a middle-tier data collector. It polls external transit
 * AWS Cloud (EC2, RDS, Secrets Manager, VPC)
 
 ## Configuration
-You will first need to have valid aws credentials/token on the device you are launching the cloud from, using `aws login` or `aws sso login
+You will first need to have valid aws credentials/token on the device you are launching the cloud from, using `aws login` or `aws sso login`
 
 All of the environment variables for this app are deployed automatically by AWS, but terraform will prompt you for the following variables if they have not already been defined in a `terraform.tfvars` file.
 
@@ -33,6 +33,8 @@ All of the environment variables for this app are deployed automatically by AWS,
 |`gtfs_provider_api_key`               |API key used to poll the GTFS provider|
 |`gtfs_provider_api_url`               |Base URL of the GTFS provider|
 | `ssh_address` | CIDR block of addresses allowed to ssh into the EC2| 
+
+You will also need to provision yourself a keypair for your ec2 instance called `gtfs-ssh-keypair.pem` and store it in the `./.ssh` directory.
 
 ## How to build and run
 Once configured, you can run the app by running `deploy.sh` in the base project directory
