@@ -37,7 +37,10 @@ build/
 ### Local Environment Variables ###
 .env
 *.env
+<<<<<<< HEAD
 .env.prod
+=======
+>>>>>>> main
 
 .ssh/
 logs/
@@ -45,6 +48,7 @@ logs/
 ROADMAP.md
 
 ### Terraform ###
+<<<<<<< HEAD
 *.tfstate
 *.tfstate.*
 *.tfvars
@@ -56,3 +60,10 @@ crash.*.log
 .terraformrc
 terraform.rc
 *.pem
+=======
+infra/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform/
+>>>>>>> main

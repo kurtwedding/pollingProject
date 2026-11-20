@@ -7,9 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -19,6 +18,7 @@ import lombok.Setter;
 public class Route {
 
     @Id
+    @NotNull
     @Column(name = "route_id")
     @JsonProperty("route_id")
     private String routeId;
@@ -31,10 +31,11 @@ public class Route {
     @JsonProperty("route_long_name")
     private String routeLongName;
 
-    private String route_color;
-    private String route_text_color;
+    private String route_color = "#FFFFFF";
+    private String route_text_color = "#000000";
 
     @JsonProperty("route_type")
+    @NotNull
     private RouteType routeType = RouteType.UNKNOWN; // Runs RouteTypeConverter automatically for this field.
 
 }
