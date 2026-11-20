@@ -13,6 +13,7 @@ This application acts as a middle-tier data collector. It polls external transit
 * Data Persistence: Utilizes Spring Data JPA with Hibernate for storage and batch processing of API requests.
 * API Security: Implements custom API Key authentication filters to secure REST API endpoints.
 * Resilience: Configured with retry logic for reliable data fetching, independent of network.
+* Automatic Deployment: This application automatically deploys to the aws cloud to ensure high-reliability.
 
 ## Technologies
 * Java 25+
@@ -25,7 +26,7 @@ This application acts as a middle-tier data collector. It polls external transit
 ## Configuration
 You will first need to have valid aws credentials/token on the device you are launching the cloud from, using `aws login` or `aws sso login
 
-All of the environment variables for this app are deployed automatically by AWS, but terraform will prompt you for the following variables if they have not already been defined in a `.tfvars` file.
+All of the environment variables for this app are deployed automatically by AWS, but terraform will prompt you for the following variables if they have not already been defined in a `terraform.tfvars` file.
 
 |Variable|Description|
 |--------|-----------|
