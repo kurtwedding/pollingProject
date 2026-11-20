@@ -7,7 +7,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-amd64-server-*"]
   }
 
   # Using Canonical's official account to verify the ubuntu image
@@ -31,7 +31,7 @@ resource "aws_instance" "app_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update
-              sudo apt install openjdk-17-jre-headless postgresql-client -y
+              sudo apt install openjdk-25-jre-headless postgresql-client -y
               EOF
 
   tags = {
