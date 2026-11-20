@@ -1,6 +1,11 @@
 MAGENTA='\033[0;35m'
 NC='\033[0m'
 
+if [ ! -d "./infra/.terraform" ]; then
+    printf "[$MAGENTA$(date +"%T")$NC] Initializing Terraform\n"
+    (cd ./infra && terraform init)
+fi
+
 printf "[$MAGENTA$(date +"%T")$NC] Launching/Updating cloud infrastructure\n"
 (cd infra && terraform apply -auto-approve)
 
