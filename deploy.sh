@@ -55,6 +55,9 @@ EOF
 printf "[$MAGENTA$(date +"%T")$NC] Compiling Spring Boot project\n"
 mvn clean package -DskipTests
 
+printf "[$MAGENTA$(date +"%T")$NC] Updating ssh key permissions to private"
+chmod 600 .ssh/gtfs-ssh-keypair.pem
+
 printf "[$MAGENTA$(date +"%T")$NC] Uploading .env file to the EC2 instance\n"
 scp -i .ssh/gtfs-ssh-keypair.pem .env ubuntu@$EC2_IP:~/.env
 
